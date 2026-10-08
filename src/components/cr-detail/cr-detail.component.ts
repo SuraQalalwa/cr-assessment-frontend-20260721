@@ -31,6 +31,7 @@ export class CrDetailComponent implements OnInit {
 		validators: [
 			Validators.required, // to ensure a reason is entered
 			Validators.pattern(/^\s*\S.*$/), // to ensure the reason is not just whitespace
+			Validators.minLength(5),
 		],
 	});
 
