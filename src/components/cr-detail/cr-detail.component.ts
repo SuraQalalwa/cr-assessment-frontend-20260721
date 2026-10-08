@@ -84,7 +84,19 @@ export class CrDetailComponent implements OnInit {
 
 	async approve(): Promise<void> {
 		// TODO: perform the approve action through the API and reflect the outcome in the view.
-		throw new Error('approve() not implemented');
+		if (!this.canApprove || this.submitting || !this.detail) {
+			return;
+		}
+		this.submitting = true; // to disable the buttons while the API call in progress
+		this.actionError = undefined; // to clear any previous error message
+		try {
+			const updated = await this.api.approve(this.session.user, this.id, new Date().toISOString());
+			this.state = { status: 'loaded', data: updated };
+		} catch (err) {
+			this.actionError = (err as Error).message;
+		} finally {
+			this.submitting = false;
+		}
 	}
 
 	async reject(): Promise<void> {
