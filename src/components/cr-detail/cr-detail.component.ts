@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CrApiService } from '../../api/cr-api.service';
@@ -20,7 +20,7 @@ import { canApprovePolicy } from '../../common/permissions';
 	imports: [CommonModule, ReactiveFormsModule],
 	templateUrl: './cr-detail.component.html',
 })
-export class CrDetailComponent implements OnInit {
+export class CrDetailComponent implements OnInit, OnChanges {
 	@Input() id!: string;
 
 	state: ViewState<CrDetail> = idle();
@@ -40,6 +40,13 @@ export class CrDetailComponent implements OnInit {
 
 	ngOnInit(): void {
 		void this.load();
+	}
+
+	ngOnChanges(changes: SimpleChanges): void {
+		// Only reload if id changed after the initial render
+		if (changes['id'] && !changes['id'].firstChange) {
+			void this.load();
+		}
 	}
 
 	async load(): Promise<void> {
